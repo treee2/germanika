@@ -2,6 +2,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bed, Bath, Users, MapPin } from "lucide-react";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
