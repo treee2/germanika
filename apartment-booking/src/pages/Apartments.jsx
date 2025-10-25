@@ -57,7 +57,7 @@ export default function Apartments() {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col gap-8">
           <div className="lg:w-80 flex-shrink-0">
             <div className="sticky top-4">
               <ApartmentFilters filters={filters} onFilterChange={setFilters} />

@@ -17,8 +17,14 @@ export default function ApartmentCard({ apartment }) {
         <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300 bg-white/90 backdrop-blur-sm">
           <div className="relative h-64 overflow-hidden">
             <img
-              src={apartment.image_url || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800"}
+              src={apartment.image_filename 
+                ? `/images/apartments/${apartment.image_filename}` 
+                : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800"}
               alt={apartment.title}
+              onError={(e) => {
+                // Если локальное изображение не найдено, показываем изображение из интернета
+                e.target.src = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800";
+              }}
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
             />
             <div className="absolute top-4 right-4">

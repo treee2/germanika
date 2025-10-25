@@ -1,84 +1,60 @@
-// Это временная реализация для тестирования
-// Когда у вас будет настоящий сервер, замените этот файл
+// Базовый URL для API (сервер работает на порту 3001)
+const API_BASE_URL = 'http://localhost:3001/api';
 
-// Создаём несколько тестовых квартир
-const mockApartments = [
-  {
-    id: "1",
-    title: "Уютная студия в центре",
-    description: "Современная квартира с прекрасным видом на город. Идеально подходит для одного или двух человек.",
-    address: "ул. Пушкина, д. 10, Москва",
-    price_per_night: 5000,
-    bedrooms: 1,
-    bathrooms: 1,
-    max_guests: 2,
-    is_available: true,
-    amenities: ["Wi-Fi", "ТВ", "Кондиционер"],
-    image_url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800"
-  },
-  {
-    id: "2",
-    title: "Просторные апартаменты",
-    description: "Роскошная квартира для семейного отдыха с тремя спальнями и современной кухней.",
-    address: "Невский проспект, д. 25, Санкт-Петербург",
-    price_per_night: 12000,
-    bedrooms: 3,
-    bathrooms: 2,
-    max_guests: 6,
-    is_available: true,
-    amenities: ["Wi-Fi", "ТВ", "Кондиционер", "Парковка"],
-    image_url: "https://images.unsplash.com/photo-1502672260066-6bc35f0af07e?w=800"
-  },
-  {
-    id: "3",
-    title: "Элитная квартира с видом",
-    description: "Премиальное жильё в историческом центре города.",
-    address: "Тверская улица, д. 15, Москва",
-    price_per_night: 18000,
-    bedrooms: 2,
-    bathrooms: 2,
-    max_guests: 4,
-    is_available: true,
-    amenities: ["Wi-Fi", "ТВ", "Кондиционер", "Парковка"],
-    image_url: "https://images.unsplash.com/photo-1536376072261-38c75010e6c9?w=800"
+// Вспомогательная функция для выполнения запросов
+async function fetchAPI(endpoint, options = {}) {
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Ошибка при выполнении запроса');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
   }
-];
+}
 
-// Массив для хранения бронирований
-const mockBookings = [];
-
-// Экспортируем объект, имитирующий работу с API
+// Экспортируем объект для работы с API
 export const base44 = {
   entities: {
     Apartment: {
       // Получить список всех квартир
       list: async (sortOrder) => {
-        // Имитируем задержку сети
-        await new Promise(resolve => setTimeout(resolve, 500));
-        return mockApartments;
+        return await fetchAPI('/apartments');
       },
-      // Найти квартиру по параметрам
+      
+      // Найти квартиру по ID
       filter: async (params) => {
-        await new Promise(resolve => setTimeout(resolve, 300));
-        return mockApartments.filter(apt => apt.id === params.id);
+        if (params.id) {
+          const apartment = await fetchAPI(`/apartments/${params.id}`);
+          return [apartment]; // Возвращаем массив для совместимости с существующим кодом
+        }
+        return await fetchAPI('/apartments');
       }
     },
+    
     Booking: {
       // Получить список всех бронирований
       list: async (sortOrder) => {
-        await new Promise(resolve => setTimeout(resolve, 500));
-        return mockBookings;
+        return await fetchAPI('/bookings');
       },
+      
       // Создать новое бронирование
       create: async (bookingData) => {
-        await new Promise(resolve => setTimeout(resolve, 300));
-        const newBooking = {
-          ...bookingData,
-          id: Date.now().toString(),
-          created_date: new Date().toISOString()
-        };
-        mockBookings.push(newBooking);
-        return newBooking;
+        return await fetchAPI('/bookings', {
+          method: 'POST',
+          body: JSON.stringify(bookingData),
+        });
       }
     }
   }

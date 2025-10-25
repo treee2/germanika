@@ -134,9 +134,15 @@ export default function ApartmentDetails() {
             {/* Image */}
             <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src={apartment.image_url || "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200"}
+                src={apartment.image_filename 
+                  ? `/images/apartments/${apartment.image_filename}` 
+                  : "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800"}
                 alt={apartment.title}
-                className="w-full h-full object-cover"
+                onError={(e) => {
+                  // Если локальное изображение не найдено, показываем изображение из интернета
+                  e.target.src = "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800";
+                }}
+                className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
               />
               {!apartment.is_available && (
                 <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center">
