@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Calendar, User, Building2 } from "lucide-react";
+import { Home, Calendar, User, Building2, Plus } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -22,10 +22,20 @@ const navigationItems = [
     url: createPageUrl("Apartments"),
     icon: Home,
   },
+    {
+    title: "Добавить квартиру",
+    url: createPageUrl("AddApartment"),
+    icon: Plus,
+  },
   {
     title: "Мои бронирования",
     url: createPageUrl("MyBookings"),
     icon: Calendar,
+  },
+  {
+    title: "Профиль",
+    url: createPageUrl("Profile"),
+    icon: User,
   },
 ];
 

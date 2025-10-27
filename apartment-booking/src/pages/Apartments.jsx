@@ -3,14 +3,18 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
-import { Search } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 import ApartmentCard from "../components/apartments/ApartmentCard";
 import ApartmentFilters from "../components/apartments/ApartmentFilters";
 
 export default function Apartments() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
     maxPrice: 15000,
@@ -37,9 +41,18 @@ export default function Apartments() {
     <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-3">
-            Премиум квартиры
-          </h1>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-3">
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-900">
+              Премиум квартиры
+            </h1>
+            <Button
+              onClick={() => navigate(createPageUrl("AddApartment"))}
+              className="bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 shadow-lg shadow-indigo-500/30"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Добавить квартиру
+            </Button>
+          </div>
           <p className="text-slate-600 text-lg">
             Найдите идеальное жильё для вашего отдыха
           </p>
@@ -57,7 +70,7 @@ export default function Apartments() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-80 flex-shrink-0">
             <div className="sticky top-4">
               <ApartmentFilters filters={filters} onFilterChange={setFilters} />
