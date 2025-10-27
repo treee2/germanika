@@ -42,6 +42,8 @@ import Layout from './components/Layout';
 import Apartments from './pages/Apartments';
 import ApartmentDetails from './pages/ApartmentDetails';
 import MyBookings from './pages/MyBookings';
+import AddApartment from './pages/AddApartment';
+import Profile from './pages/Profile';
 
 // Создаём клиент для TanStack Query
 // Он будет управлять загрузкой и кэшированием данных
@@ -90,6 +92,25 @@ function App() {
             element={
               <Layout currentPageName="MyBookings">
                 <MyBookings />
+              </Layout>
+            }
+          />
+
+          {/* Страница добавления квартиры */}
+          <Route
+            path="/addapartment"
+            element={
+              <Layout currentPageName="AddApartment">
+                <AddApartment />
+              </Layout>
+            }
+          />
+          {/* Страница профиля пользователя */}
+          <Route
+            path="/profile"
+            element={
+              <Layout currentPageName="Profile">
+                <Profile />
               </Layout>
             }
           />
