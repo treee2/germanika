@@ -1,7 +1,9 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Calendar, User, Building2, Plus } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
+import { Home, Calendar, User, Building2, Plus, LogOut, Settings } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -15,6 +17,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navigationItems = [
   {
@@ -22,7 +31,7 @@ const navigationItems = [
     url: createPageUrl("Apartments"),
     icon: Home,
   },
-    {
+  {
     title: "Добавить квартиру",
     url: createPageUrl("AddApartment"),
     icon: Plus,
@@ -42,6 +51,21 @@ const navigationItems = [
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
 
+  const { data: user } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async () => {
+      try {
+        return await base44.auth.me();
+      } catch (error) {
+        return null;
+      }
+    },
+  });
+
+  const handleLogout = () => {
+    base44.auth.logout();
+  };
+
   return (
     <SidebarProvider>
       <style>{`
@@ -60,8 +84,8 @@ export default function Layout({ children, currentPageName }) {
                 <Building2 className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="font-bold text-slate-900 text-lg">Germanika</h2>
-                <p className="text-xs text-slate-500 font-medium">Поиск жилья</p>
+                <h2 className="font-bold text-slate-900 text-lg">LuxStay</h2>
+                <p className="text-xs text-slate-500 font-medium">Премиум квартиры</p>
               </div>
             </Link>
           </SidebarHeader>
@@ -91,15 +115,39 @@ export default function Layout({ children, currentPageName }) {
           </SidebarContent>
 
           <SidebarFooter className="border-t border-slate-200/60 p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-500 rounded-full flex items-center justify-center shadow-md">
-                <User className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-slate-900 text-sm truncate">Гость</p>
-                <p className="text-xs text-slate-500 truncate">Добро пожаловать</p>
-              </div>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-3 w-full hover:bg-slate-50 p-2 rounded-lg transition-colors duration-200">
+                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-500 rounded-full flex items-center justify-center shadow-md">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0 text-left">
+                    <p className="font-semibold text-slate-900 text-sm truncate">
+                      {user?.full_name || 'Гость'}
+                    </p>
+                    <p className="text-xs text-slate-500 truncate">
+                      {user?.email || 'Добро пожаловать'}
+                    </p>
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem asChild>
+                  <Link to={createPageUrl("Profile")} className="cursor-pointer">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Настройки профиля
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={handleLogout}
+                  className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Выйти
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </SidebarFooter>
         </Sidebar>
 
@@ -107,7 +155,7 @@ export default function Layout({ children, currentPageName }) {
           <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-6 py-4 md:hidden sticky top-0 z-10">
             <div className="flex items-center gap-4">
               <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-lg transition-colors duration-200" />
-              <h1 className="text-xl font-bold text-slate-900">Germanika</h1>
+              <h1 className="text-xl font-bold text-slate-900">LuxStay</h1>
             </div>
           </header>
 
